@@ -1,0 +1,97 @@
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+.App {
+    text-align: center;
+}
+
+.App-logo {
+    animation: App-logo-spin infinite 20s linear;
+    height: 80px;
+}
+
+.App-header {
+    background-color: #222;
+    height: 80px;
+    padding: 20px;
+    color: white;
+}
+
+.App-title {
+    font-size: 1.5em;
+}
+
+.App-intro {
+    font-size: large;
+}
+
+@keyframes App-logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.products {
+    width: 100%;
+    max-width: 400px;
+    margin: 40px auto 0;
+    box-sizing: border-box;
+    padding: 0 20px;
+}
+
+.product {
+    margin: 10px 0;
+    border: 1px solid #222;
+    position: relative;
+    min-height: 65px;
+}
+
+.product .likes {
+    width: 75px;
+    height: 65px;
+    position: absolute;
+    left: 0;
+    padding: 10px;
+}
+
+.product-details {
+    text-align: center;
+    padding: 10px 10px 10px 75px;
+}
+.product .name {
+    margin: 0 0 10px;
+}
+
+.likes .count {
+    display: inline-block;
+    width: 50%;
+    vertical-align: middle;
+}
+.likes .controls {
+    width: 50%;
+    height: 100%;
+    display: inline-block;
+    vertical-align: middle;
+}
+.likes button {
+    border: 0;
+    padding: 4px 10px;
+    display: inline-block;
+    margin: 0 auto;
+    background-color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+    outline: 0;
+    line-height: 1;
+}
+
+.likes button:hover {
+    color: #29B6F6;
+}
+
+.likes .controls .down {
+}
+
