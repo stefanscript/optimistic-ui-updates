@@ -8,21 +8,36 @@ const products = [
     {id: 8, name: "Running shoes", price: 125, likes: 99}
 ];
 
+const getVoteValue = (vote) => vote === UP_VOTE ? 1 : -1;
+
 class ProductList extends Component {
     state = {
-        products: products
+        products: products,
+        votedProducts: []
+    };
+
+    updateState = (id, voteValue) => {
+        console.log("votedProducts0", this.state.votedProducts);
+        const votedAlready = this.state.votedProducts.filter(vote => (vote.id === id && vote.vote === voteValue));
+        console.log("votedAlready", votedAlready);
+
+        if(votedAlready.length === 1) { return ; }
+
+        this.setState((prevState) => {
+            return {
+                products: prevState.products.map((product) => {
+                    return product.id === id ?
+                        {...product, likes: product.likes + getVoteValue(voteValue)} :
+                        product;
+                }),
+                votedProducts: prevState.votedProducts.filter(vote => id !== vote.id).concat([{id: id, vote: voteValue}])
+            }
+        });
     };
 
     handleVoteClick = (id, vote) => {
         console.log("Product", id, vote);
-        const voteValue = vote === UP_VOTE ? 1 : -1;
-        this.setState((prevState) => {
-            return {
-                products: prevState.products.map((product) => {
-                    return product.id === id ? {...product, likes: product.likes + voteValue} : product;
-                })
-            }
-        });
+        this.updateState(id, vote);
     };
 
     render(){
