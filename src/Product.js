@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 import {UP_VOTE, DOWN_VOTE} from "./constants";
 
 const Product = ({
-    id, name, price, likes, onVoteClick, requestWillFail
+    id, name, price, likes, onVoteClick, requestWillFail, voted
 }) => (
-    <article className={`product ${requestWillFail ? "request-will-fail" : ""}`} id={`article_${id}`}>
+    <article className={`product${voted ? " voted" : ""}${requestWillFail ? " request-will-fail" : ""}`} id={`article_${id}`}>
         <div className="likes">
             <div className="count">{likes}</div>
             <div className="controls">
@@ -26,6 +26,8 @@ Product.propTypes = {
     price: PropTypes.number,
     likes: PropTypes.number,
     onVoteClick: PropTypes.func,
+    requestWillFail: PropTypes.bool,
+    voted: PropTypes.bool,
 };
 
 export default Product;

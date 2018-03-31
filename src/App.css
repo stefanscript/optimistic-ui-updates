@@ -69,9 +69,12 @@
     display: inline-block;
     width: 50%;
     vertical-align: middle;
-    color: #29B6F6;
     font-weight: bold;
 }
+.voted .count {
+    color: #29B6F6;
+}
+
 .likes .controls {
     width: 50%;
     height: 100%;

@@ -117,6 +117,7 @@ describe("ProductList", () => {
         });
 
         function callback(done){
+            expect(wrapper.state().votedProducts).toEqual([]);
             expect(wrapper.state().products[1].id).toEqual(7);
             expect(wrapper.state().products[1].likes).toEqual(300);
             done();
@@ -124,10 +125,17 @@ describe("ProductList", () => {
 
         it("UP vote is reverted", (done) => {
             wrapper.instance().handleVoteClick(7, UP_VOTE, callback(done));
+            expect(wrapper.state().products[1].id).toEqual(7);
+            expect(wrapper.state().products[1].likes).toEqual(301);
+            expect(wrapper.state().votedProducts).toEqual([{"id": 7, "vote": "UP_VOTE"}]);
         });
 
         it("DOWN vote is reverted", (done) => {
             wrapper.instance().handleVoteClick(7, DOWN_VOTE, callback(done));
+            expect(wrapper.state().products[1].id).toEqual(7);
+            expect(wrapper.state().products[1].likes).toEqual(299);
+            expect(wrapper.state().votedProducts).toEqual([{"id": 7, "vote": "DOWN_VOTE"}]);
         });
+
     });
 });

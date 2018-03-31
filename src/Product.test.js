@@ -42,4 +42,9 @@ describe("Product", () => {
         wrapper.find(".controls .down").simulate("click");
         expect(onClick).toHaveBeenCalledWith(1, DOWN_VOTE);
     });
+
+    it("given the user voted on the item get a voted class", () => {
+        wrapper.setProps({voted: true});
+        expect(wrapper.is(".voted")).toEqual(true);
+    });
 });

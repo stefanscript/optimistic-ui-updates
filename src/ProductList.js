@@ -59,7 +59,7 @@ class ProductList extends Component {
                 console.log("data", data);
             }).catch((err) => {
                 console.log("err", err);
-                self.updateState(id, getRevertValue(voteValue))
+                self.updateState(id, getRevertValue(voteValue));
             }).then(() => {
                 callback ? callback() : console.log("done");
             });
@@ -68,11 +68,13 @@ class ProductList extends Component {
     render() {
         const productsToRender = this.state.products.map(product => {
             const requestWillFail = this.requestHandler.idsToFail.includes(product.id);
+            const voted = this.state.votedProducts.filter(vote => vote.id === product.id);
             return <Product
                 key={product.id}
                 {...product}
                 onVoteClick={this.handleVoteClick}
                 requestWillFail={requestWillFail}
+                voted={voted.length === 1}
             />;
         });
 
