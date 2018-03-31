@@ -69,6 +69,8 @@
     display: inline-block;
     width: 50%;
     vertical-align: middle;
+    color: #29B6F6;
+    font-weight: bold;
 }
 .likes .controls {
     width: 50%;
@@ -94,5 +96,20 @@
 }
 
 .likes .controls .down {
+}
+
+.request-will-fail {
+    border-color: #E64A19;
+    position: relative;
+}
+
+.request-will-fail:after {
+    content: "http vote request will fail for this product";
+    position: absolute;
+    font-size: .6em;
+    bottom: 0;
+    left: 5px;
+    font-style: italic;
+    color: #ccc;
 }
 

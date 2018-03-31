@@ -35,17 +35,16 @@ describe("ProductList", () => {
     describe("Optimistic Voting", () => {
         beforeEach(() => {
             wrapper.setState({products: twoProducts});
+            wrapper.setState({votedProducts: []});
         });
 
         it("Given the UP vote button has been clicked votes count increases by one", () => {
-            wrapper.setState({votedProducts: []});
             wrapper.instance().handleVoteClick(7, UP_VOTE);
             expect(wrapper.state().products[1].id).toEqual(7);
             expect(wrapper.state().products[1].likes).toEqual(301);
         });
 
-        it("Given the UP vote button has been clicked twice votes count increases by one", () => {
-            wrapper.setState({votedProducts: []});
+        it("Given 2 UP votes, count increases by one", () => {
             wrapper.instance().handleVoteClick(7, UP_VOTE);
             wrapper.instance().handleVoteClick(7, UP_VOTE);
             expect(wrapper.state().products[1].id).toEqual(7);
@@ -53,8 +52,6 @@ describe("ProductList", () => {
         });
 
         it("Given the UP vote button has been clicked the product id is added to voteProducts state", () => {
-            wrapper.setState({votedProducts: []});
-
             wrapper.instance().handleVoteClick(7, UP_VOTE);
 
             expect(wrapper.state().votedProducts).toEqual([{id: 7, vote: UP_VOTE}]);
@@ -75,6 +72,62 @@ describe("ProductList", () => {
             expect(wrapper.state().votedProducts).toEqual([{id: 7, vote: DOWN_VOTE}]);
         });
 
+        it("Given 2 DOWN votes, count decreases by one", () => {
+            wrapper.instance().handleVoteClick(7, DOWN_VOTE);
+            wrapper.instance().handleVoteClick(7, DOWN_VOTE);
+            expect(wrapper.state().products[1].id).toEqual(7);
+            expect(wrapper.state().products[1].likes).toEqual(299);
+        });
+    });
 
+    describe("Vot HTTP request is successful", () => {
+        beforeEach(() => {
+            wrapper.setState({products: twoProducts});
+            wrapper.setState({votedProducts: []});
+
+            wrapper.instance().requestHandler.idsToFail = [];
+        });
+
+        it("UP vote counts as +1 vote", () => {
+            wrapper.instance().handleVoteClick(7, DOWN_VOTE);
+            expect(wrapper.state().products[1].id).toEqual(7);
+            expect(wrapper.state().products[1].likes).toEqual(299);
+        });
+
+        it("DOWN vote counts as -1 vote", () => {
+            wrapper.instance().handleVoteClick(7, UP_VOTE);
+            expect(wrapper.state().products[1].id).toEqual(7);
+            expect(wrapper.state().products[1].likes).toEqual(301);
+        });
+
+        it("2 DOWN votes counts as -1 vote", () => {
+            wrapper.instance().handleVoteClick(7, UP_VOTE);
+            wrapper.instance().handleVoteClick(7, UP_VOTE);
+            expect(wrapper.state().products[1].id).toEqual(7);
+            expect(wrapper.state().products[1].likes).toEqual(301);
+        });
+    });
+
+    describe("Vot HTTP request fails", () => {
+        beforeEach(() => {
+            wrapper.setState({products: twoProducts});
+            wrapper.setState({votedProducts: []});
+
+            wrapper.instance().requestHandler.idsToFail = [7];
+        });
+
+        function callback(done){
+            expect(wrapper.state().products[1].id).toEqual(7);
+            expect(wrapper.state().products[1].likes).toEqual(300);
+            done();
+        }
+
+        it("UP vote is reverted", (done) => {
+            wrapper.instance().handleVoteClick(7, UP_VOTE, callback(done));
+        });
+
+        it("DOWN vote is reverted", (done) => {
+            wrapper.instance().handleVoteClick(7, DOWN_VOTE, callback(done));
+        });
     });
 });
