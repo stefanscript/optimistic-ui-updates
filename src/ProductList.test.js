@@ -116,7 +116,7 @@ describe("ProductList", () => {
             wrapper.instance().requestHandler.idsToFail = [7];
         });
 
-        function callback(done){
+        function checkStateIsRevertedAfterResponse(done) {
             expect(wrapper.state().votedProducts).toEqual([]);
             expect(wrapper.state().products[1].id).toEqual(7);
             expect(wrapper.state().products[1].likes).toEqual(300);
@@ -124,17 +124,33 @@ describe("ProductList", () => {
         }
 
         it("UP vote is reverted", (done) => {
-            wrapper.instance().handleVoteClick(7, UP_VOTE, callback(done));
+            wrapper.instance().handleVoteClick(7, UP_VOTE, checkStateIsRevertedAfterResponse.bind(this, done));
             expect(wrapper.state().products[1].id).toEqual(7);
             expect(wrapper.state().products[1].likes).toEqual(301);
             expect(wrapper.state().votedProducts).toEqual([{"id": 7, "vote": "UP_VOTE"}]);
         });
 
         it("DOWN vote is reverted", (done) => {
-            wrapper.instance().handleVoteClick(7, DOWN_VOTE, callback(done));
+            wrapper.instance().handleVoteClick(7, DOWN_VOTE, checkStateIsRevertedAfterResponse.bind(this, done));
             expect(wrapper.state().products[1].id).toEqual(7);
             expect(wrapper.state().products[1].likes).toEqual(299);
             expect(wrapper.state().votedProducts).toEqual([{"id": 7, "vote": "DOWN_VOTE"}]);
+
+        });
+
+        function checkYouCanVoteAfterResponse(done) {
+            expect(wrapper.instance().canVote(7, DOWN_VOTE)).toEqual(true);
+            expect(wrapper.instance().canVote(7, UP_VOTE)).toEqual(true);
+            expect(wrapper.state().votedProducts).toEqual([]);
+            done();
+
+        }
+
+        it("After UP vote is reverted you can still DOWN vote", (done) => {
+            wrapper.instance().handleVoteClick(7, UP_VOTE, checkYouCanVoteAfterResponse.bind(this, done));
+            expect(wrapper.state().products[1].id).toEqual(7);
+            expect(wrapper.state().products[1].likes).toEqual(301);
+            expect(wrapper.state().votedProducts).toEqual([{"id": 7, "vote": "UP_VOTE"}]);
         });
 
     });

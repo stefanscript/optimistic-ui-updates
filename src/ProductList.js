@@ -28,12 +28,8 @@ class ProductList extends Component {
     updateState = (id, voteValue) => {
         this.setState((prevState) => {
             return {
-                products: prevState.products.map((product) => {
-                    return product.id === id ?
-                        {...product, likes: product.likes + getVoteValue(voteValue)} :
-                        product;
-                }),
-                votedProducts: prevState.votedProducts.filter(vote => id !== vote.id).concat([{
+                products: this._addLikeToProduct(prevState, id, voteValue),
+                votedProducts: this._removeProductFromVoted(prevState, id).concat([{
                     id: id,
                     vote: voteValue
                 }])
@@ -41,14 +37,34 @@ class ProductList extends Component {
         });
     };
 
+    revertState = (id, voteValue) => {
+        this.setState((prevState) => {
+            return {
+                products: this._addLikeToProduct(prevState, id, voteValue),
+                votedProducts: this._removeProductFromVoted(prevState, id)
+            }
+        });
+    };
+
+    _addLikeToProduct(state, id, voteValue){
+        return state.products.map((product) => {
+            return product.id === id ?
+                {...product, likes: product.likes + getVoteValue(voteValue)} :
+                product;
+        })
+    }
+
+    _removeProductFromVoted(state, id) {
+        return state.votedProducts.filter(vote => id !== vote.id)
+    }
+
     handleVoteClick = (id, voteValue, callback) => {
         const self = this;
         console.log("Product", id, voteValue);
         console.log("votedProducts0", id, voteValue, this.state.votedProducts);
-        const votedAlready = this.state.votedProducts.filter(vote => (vote.id === id && vote.vote === voteValue));
-        console.log("votedAlready", votedAlready);
 
-        if (votedAlready.length === 1) {
+        console.log("votedAlready", this.votedAlready(id, voteValue));
+        if (this.votedAlready(id, voteValue)) {
             return;
         }
 
@@ -57,13 +73,21 @@ class ProductList extends Component {
         this.requestHandler.like(id, voteValue)
             .then((data) => {
                 console.log("data", data);
+                callback ? callback() : console.log("done");
             }).catch((err) => {
                 console.log("err", err);
-                self.updateState(id, getRevertValue(voteValue));
-            }).then(() => {
+                self.revertState(id, getRevertValue(voteValue));
                 callback ? callback() : console.log("done");
             });
     };
+
+    votedAlready(id, voteValue){
+        return this.state.votedProducts.filter(vote => (vote.id === id && vote.vote === voteValue)).length > 0;
+    }
+
+    canVote(id, voteValue){
+        return !this.votedAlready(id, voteValue);
+    }
 
     render() {
         const productsToRender = this.state.products.map(product => {
